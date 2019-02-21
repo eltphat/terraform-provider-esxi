@@ -86,7 +86,12 @@ func validateGuestOsType(guestos string) bool {
     centos6-64
     centos-64
     centos6
+<<<<<<< HEAD
     centos7-64
+=======
+    centos8-64
+		centos7-64
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
     centos7
     centos
     coreos-64
@@ -120,6 +125,13 @@ func validateGuestOsType(guestos string) bool {
     ecomstation
     fedora-64
     fedora
+<<<<<<< HEAD
+=======
+		freebsd11-64
+    freebsd11
+		freebsd12-64
+    freebsd12
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
     freebsd-64
     freebsd
     genericlinux
@@ -200,6 +212,7 @@ func validateGuestOsType(guestos string) bool {
     win98
     windows7-64
     windows7
+<<<<<<< HEAD
     windows7server-64
     windows8-64
     windows8
@@ -207,6 +220,15 @@ func validateGuestOsType(guestos string) bool {
     windows9-64
     windows9
     windows9server-64
+=======
+    windows7srv-64
+    windows8-64
+    windows8
+    windows8srv-64
+    windows9-64
+    windows9
+    windows9srv-64
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
     windowshyperv
     winlonghorn-64
     winlonghorn
@@ -230,3 +252,22 @@ func validateGuestOsType(guestos string) bool {
 	guestos = fmt.Sprintf(" %s\n", guestos)
 	return strings.Contains(allGuestOSs, guestos)
 }
+<<<<<<< HEAD
+=======
+
+func validateSCSIType(scsitype string) bool {
+	log.Printf("[validateSCSIType]\n")
+
+	if scsitype == "" {
+		return true
+	}
+
+	allSCSItypes := `
+    lsilogic
+    pvscsi
+    lsisas1068
+	  `
+	scsitype = fmt.Sprintf(" %s\n", scsitype)
+	return strings.Contains(allSCSItypes, scsitype)
+}
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3

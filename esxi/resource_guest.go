@@ -6,6 +6,10 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/helper/validation"
 	"log"
+<<<<<<< HEAD
+=======
+	"net/url"
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 	"strconv"
 )
 
@@ -58,7 +62,11 @@ func resourceGUEST() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 				ForceNew:    true,
+<<<<<<< HEAD
 				DefaultFunc: schema.EnvDefaultFunc("boot_disk_type", nil),
+=======
+				DefaultFunc: schema.EnvDefaultFunc("boot_disk_type", "thin"),
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 				Description: "Guest boot disk type. thin, zeroedthick, eagerzeroedthick",
 			},
 			"boot_disk_size": &schema.Schema{
@@ -160,7 +168,11 @@ func resourceGUEST() *schema.Resource {
 						"virtual_disk_id": &schema.Schema{
 							Type:     schema.TypeString,
 							Required: true,
+<<<<<<< HEAD
 							ForceNew: true,
+=======
+							ForceNew: false,
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 						},
 						"slot": &schema.Schema{
 							Type:        schema.TypeString,
@@ -179,6 +191,15 @@ func resourceGUEST() *schema.Resource {
 				Computed:    true,
 				Description: "Guest notes (annotation).",
 			},
+<<<<<<< HEAD
+=======
+			"guestinfo": &schema.Schema{
+				Type:        schema.TypeMap,
+				Optional:    true,
+				Description: "pass data to VM",
+				ForceNew:    true,
+			},
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 		},
 	}
 }
@@ -186,6 +207,11 @@ func resourceGUEST() *schema.Resource {
 func resourceGUESTCreate(d *schema.ResourceData, m interface{}) error {
 	c := m.(*Config)
 
+<<<<<<< HEAD
+=======
+	log.Printf("[resourceGUESTCreate]\n")
+
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 	var virtual_networks [4][3]string
 	var virtual_disks [60][2]string
 	var src_path string
@@ -203,11 +229,21 @@ func resourceGUESTCreate(d *schema.ResourceData, m interface{}) error {
 	virthwver := d.Get("virthwver").(string)
 	guestos := d.Get("guestos").(string)
 	guest_shutdown_timeout := d.Get("guest_shutdown_timeout").(int)
+<<<<<<< HEAD
 	guest_startup_timeout := d.Get("guest_startup_timeout").(int)
 	notes := d.Get("notes").(string)
 
 	saved_boot_disk_type := boot_disk_type
 	saved_numvcpus := numvcpus
+=======
+	notes := d.Get("notes").(string)
+	power := d.Get("power").(string)
+
+	guestinfo, ok := d.Get("guestinfo").(map[string]interface{})
+	if !ok {
+		return errors.New("guestinfo is wrong type")
+	}
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 
 	// Validations
 	if resource_pool_name == "ha-root-pool" {
@@ -215,7 +251,12 @@ func resourceGUESTCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	if clone_from_vm != "" {
+<<<<<<< HEAD
 		src_path = fmt.Sprintf("vi://%s:%s@%s/%s", c.esxiUserName, c.esxiPassword, c.esxiHostName, clone_from_vm)
+=======
+		password := url.QueryEscape(c.esxiPassword)
+		src_path = fmt.Sprintf("vi://%s:%s@%s/%s", c.esxiUserName, password, c.esxiHostName, clone_from_vm)
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 	} else if ovf_source != "" {
 		src_path = ovf_source
 	} else {
@@ -302,7 +343,11 @@ func resourceGUESTCreate(d *schema.ResourceData, m interface{}) error {
 
 	vmid, err := guestCREATE(c, guest_name, disk_store, src_path, resource_pool_name, memsize,
 		numvcpus, virthwver, guestos, boot_disk_type, boot_disk_size, virtual_networks,
+<<<<<<< HEAD
 		virtual_disks, guest_shutdown_timeout, notes)
+=======
+		virtual_disks, guest_shutdown_timeout, notes, guestinfo)
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 	if err != nil {
 		tmpint, _ = strconv.Atoi(vmid)
 		if tmpint > 0 {
@@ -314,13 +359,22 @@ func resourceGUESTCreate(d *schema.ResourceData, m interface{}) error {
 	//  set vmid
 	d.SetId(vmid)
 
+<<<<<<< HEAD
 	_, err = guestPowerOn(c, vmid)
 	if err != nil {
 		return errors.New("Failed to power on.")
+=======
+	if power == "on" {
+		_, err = guestPowerOn(c, vmid)
+		if err != nil {
+			return errors.New("Failed to power on.")
+		}
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 	}
 	d.Set("power", "on")
 
 	// Refresh
+<<<<<<< HEAD
 	guest_name, disk_store, disk_size, boot_disk_type, resource_pool_name, memsize, numvcpus, virthwver, guestos, ip_address, virtual_networks, virtual_disks, power, notes, err := guestREAD(c, d.Id(), guest_startup_timeout)
 	if err != nil {
 		d.SetId("")
@@ -380,4 +434,7 @@ func resourceGUESTCreate(d *schema.ResourceData, m interface{}) error {
 	d.Set("virtual_disks", vdisks)
 
 	return nil
+=======
+	return resourceGUESTRead(d, m)
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 }

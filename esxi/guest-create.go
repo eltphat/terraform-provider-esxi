@@ -4,8 +4,15 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+<<<<<<< HEAD
 	"os"
 	"os/exec"
+=======
+	"net/url"
+	"os"
+	"os/exec"
+	"runtime"
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 	"strconv"
 	"strings"
 )
@@ -13,12 +20,22 @@ import (
 func guestCREATE(c *Config, guest_name string, disk_store string,
 	src_path string, resource_pool_name string, strmemsize string, strnumvcpus string, strvirthwver string, guestos string,
 	boot_disk_type string, boot_disk_size string, virtual_networks [4][3]string,
+<<<<<<< HEAD
 	virtual_disks [60][2]string, guest_shutdown_timeout int, notes string) (string, error) {
+=======
+	virtual_disks [60][2]string, guest_shutdown_timeout int, notes string,
+	guestinfo map[string]interface{}) (string, error) {
+
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 	esxiSSHinfo := SshConnectionStruct{c.esxiHostName, c.esxiHostPort, c.esxiUserName, c.esxiPassword}
 	log.Printf("[guestCREATE]\n")
 
 	var memsize, numvcpus, virthwver int
 	var boot_disk_vmdkPATH, remote_cmd, vmid, stdout, vmx_contents string
+<<<<<<< HEAD
+=======
+	var osShellCmd, osShellCmdOpt string
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 	var out bytes.Buffer
 	var err error
 	err = nil
@@ -187,7 +204,12 @@ func guestCREATE(c *Config, guest_name string, disk_store string,
 		if boot_disk_type == "zeroedthick" {
 			boot_disk_type = "thick"
 		}
+<<<<<<< HEAD
 		dst_path := fmt.Sprintf("vi://%s:%s@%s/%s", c.esxiUserName, c.esxiPassword, c.esxiHostName, resource_pool_name)
+=======
+		password := url.QueryEscape(c.esxiPassword)
+		dst_path := fmt.Sprintf("vi://%s:%s@%s/%s", c.esxiUserName, password, c.esxiHostName, resource_pool_name)
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 
 		net_param := ""
 		if (strings.HasSuffix(src_path, ".ova") || strings.HasSuffix(src_path, ".ovf")) && virtual_networks[0][0] != "" {
@@ -196,7 +218,21 @@ func guestCREATE(c *Config, guest_name string, disk_store string,
 
 		ovf_cmd := fmt.Sprintf("ovftool --acceptAllEulas --noSSLVerify --X:useMacNaming=false "+
 			"-dm=%s --name='%s' --overwrite -ds='%s' %s '%s' '%s'", boot_disk_type, guest_name, disk_store, net_param, src_path, dst_path)
+<<<<<<< HEAD
 		cmd := exec.Command("/bin/bash", "-c", ovf_cmd)
+=======
+
+		if runtime.GOOS == "windows" {
+			osShellCmd = "C:\\Windows\\System32\\cmd.exe"
+			osShellCmdOpt = "/c"
+			ovf_cmd = strings.Replace(ovf_cmd, "'", "", -1)
+		} else {
+			osShellCmd = "/bin/bash"
+			osShellCmdOpt = "-c"
+		}
+
+		cmd := exec.Command(osShellCmd, osShellCmdOpt, ovf_cmd)
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 
 		log.Println("[guestCREATE] ovf_cmd: " + ovf_cmd)
 
@@ -229,7 +265,11 @@ func guestCREATE(c *Config, guest_name string, disk_store string,
 	//
 	//  make updates to vmx file
 	//
+<<<<<<< HEAD
 	err = updateVmx_contents(c, vmid, true, memsize, numvcpus, virthwver, guestos, virtual_networks, virtual_disks, notes)
+=======
+	err = updateVmx_contents(c, vmid, true, memsize, numvcpus, virthwver, guestos, virtual_networks, virtual_disks, notes, guestinfo)
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 	if err != nil {
 		return vmid, err
 	}

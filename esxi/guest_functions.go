@@ -104,7 +104,13 @@ func readVmx_contents(c *Config, vmid string) (string, error) {
 }
 
 func updateVmx_contents(c *Config, vmid string, iscreate bool, memsize int, numvcpus int,
+<<<<<<< HEAD
 	virthwver int, guestos string, virtual_networks [4][3]string, virtual_disks [60][2]string, notes string) error {
+=======
+	virthwver int, guestos string, virtual_networks [4][3]string, virtual_disks [60][2]string, notes string,
+	guestinfo map[string]interface{}) error {
+
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 	esxiSSHinfo := SshConnectionStruct{c.esxiHostName, c.esxiHostPort, c.esxiUserName, c.esxiPassword}
 	log.Printf("[updateVmx_contents]\n")
 
@@ -160,12 +166,78 @@ func updateVmx_contents(c *Config, vmid string, iscreate bool, memsize int, numv
 		}
 	}
 
+<<<<<<< HEAD
 	//
 	//  Create/update networks network_interfaces
 	//
 	var tmpvar string
 	var vmx_contents_new string
 
+=======
+	if len(guestinfo) > 0 {
+		parsed_vmx := ParseVMX(vmx_contents)
+		for k, v := range guestinfo {
+			log.Println("SAVING", k, v)
+			parsed_vmx["guestinfo."+k] = v.(string)
+		}
+		vmx_contents = EncodeVMX(parsed_vmx)
+	}
+
+	//
+	//  add/modify virtual disks
+	//
+	var tmpvar string
+	var vmx_contents_new string
+	var i, j int
+
+	//
+	//  Remove all disks
+	//
+	regexReplacement = fmt.Sprintf("")
+	for i = 0; i < 4; i++ {
+		for j = 0; j < 16; j++ {
+
+			if (i != 0 || j != 0) && j != 7 {
+				re := regexp.MustCompile(fmt.Sprintf("scsi%d:%d.*\n", i, j))
+				vmx_contents = re.ReplaceAllString(vmx_contents, regexReplacement)
+			}
+		}
+	}
+
+	//
+	//  Add disks that are managed by terraform
+	//
+	for i = 0; i < 59; i++ {
+		if virtual_disks[i][0] != "" {
+
+			log.Printf("[updateVmx_contents] Adding: %s\n", virtual_disks[i][1])
+			tmpvar = fmt.Sprintf("scsi%s.deviceType = \"scsi-hardDisk\"\n", virtual_disks[i][1])
+			if !strings.Contains(vmx_contents, tmpvar) {
+				vmx_contents += "\n" + tmpvar
+			}
+
+			tmpvar = fmt.Sprintf("scsi%s.fileName", virtual_disks[i][1])
+			if strings.Contains(vmx_contents, tmpvar) {
+				re := regexp.MustCompile(tmpvar + " = \".*\"")
+				regexReplacement = fmt.Sprintf(tmpvar+" = \"%s\"", virtual_disks[i][0])
+				vmx_contents = re.ReplaceAllString(vmx_contents, regexReplacement)
+			} else {
+				regexReplacement = fmt.Sprintf("\n"+tmpvar+" = \"%s\"", virtual_disks[i][0])
+				vmx_contents += "\n" + regexReplacement
+			}
+
+			tmpvar = fmt.Sprintf("scsi%s.present = \"true\"\n", virtual_disks[i][1])
+			if !strings.Contains(vmx_contents, tmpvar) {
+				vmx_contents += "\n" + tmpvar
+			}
+
+		}
+	}
+
+	//
+	//  Create/update networks network_interfaces
+	//
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 	if iscreate == true {
 
 		//  This is create network interfaces.  Clean out old network interfaces.
@@ -224,6 +296,7 @@ func updateVmx_contents(c *Config, vmid string, iscreate bool, memsize int, numv
 			}
 		}
 
+<<<<<<< HEAD
 		//  add virtual disks
 		for i := 0; i < 59; i++ {
 			if virtual_disks[i][0] != "" {
@@ -238,6 +311,8 @@ func updateVmx_contents(c *Config, vmid string, iscreate bool, memsize int, numv
 			}
 		}
 
+=======
+>>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 		//  Save
 		vmx_contents = vmx_contents_new
 
