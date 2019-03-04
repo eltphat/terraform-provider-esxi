@@ -16,7 +16,7 @@ func resourceGUESTUpdate(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[resourceGUESTUpdate]\n")
 >>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 
-	var virtual_networks [4][3]string
+	var virtual_networks [10][3]string
 	var virtual_disks [60][2]string
 	var i int
 	var err error
@@ -40,8 +40,8 @@ func resourceGUESTUpdate(d *schema.ResourceData, m interface{}) error {
 	}
 >>>>>>> a09975692ab4114aef08427f9b410b63842981c3
 
-	if lanAdaptersCount > 3 {
-		lanAdaptersCount = 3
+	if lanAdaptersCount > 10 {
+		lanAdaptersCount = 10
 	}
 	for i := 0; i < lanAdaptersCount; i++ {
 		prefix := fmt.Sprintf("network_interfaces.%d.", i)

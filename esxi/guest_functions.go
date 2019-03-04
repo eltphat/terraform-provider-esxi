@@ -105,9 +105,13 @@ func readVmx_contents(c *Config, vmid string) (string, error) {
 
 func updateVmx_contents(c *Config, vmid string, iscreate bool, memsize int, numvcpus int,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	virthwver int, guestos string, virtual_networks [4][3]string, virtual_disks [60][2]string, notes string) error {
 =======
 	virthwver int, guestos string, virtual_networks [4][3]string, virtual_disks [60][2]string, notes string,
+=======
+	virthwver int, guestos string, virtual_networks [10][3]string, virtual_disks [60][2]string, notes string,
+>>>>>>> b4c5ff5490318e1efa277b1a2fd1b7e4213cb655
 	guestinfo map[string]interface{}) error {
 
 >>>>>>> a09975692ab4114aef08427f9b410b63842981c3
@@ -261,7 +265,7 @@ func updateVmx_contents(c *Config, vmid string, iscreate bool, memsize int, numv
 		}
 		networkType = ""
 
-		for i := 0; i < 4; i++ {
+		for i := 0; i <= 9; i++ {
 			log.Printf("[updateVmx_contents] i: %s\n", i)
 
 			if virtual_networks[i][0] != "" {
@@ -319,7 +323,7 @@ func updateVmx_contents(c *Config, vmid string, iscreate bool, memsize int, numv
 	} else {
 
 		//  This is modify network interfaces
-		for i := 0; i < 4; i++ {
+		for i := 0; i <= 9; i++ {
 
 			// Fix virtual_network
 			if virtual_networks[i][0] != "" {

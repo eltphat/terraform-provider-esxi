@@ -50,7 +50,7 @@ func validateNICType(nictype string) bool {
 	}
 
 	allNICtypes := `
-	  vlance
+    vlance
     flexible
     e1000
     e1000e
@@ -76,6 +76,7 @@ func validateGuestOsType(guestos string) bool {
 	}
 
 	//  All valid Guest OS's
+<<<<<<< HEAD
 	allGuestOSs := `
 	  asianux3-64
     asianux3
@@ -251,6 +252,69 @@ func validateGuestOsType(guestos string) bool {
 
 	guestos = fmt.Sprintf(" %s\n", guestos)
 	return strings.Contains(allGuestOSs, guestos)
+=======
+	allGuestOSs := [...]string{"asianux",
+		"centos",
+		"coreos",
+		"darwin",
+		"debian",
+		"dos",
+		"ecomstation",
+		"fedora",
+		"freebsd",
+		"genericlinux",
+		"mandrake",
+		"mandriva",
+		"netware",
+		"nld9",
+		"oes",
+		"openserver",
+		"opensuse",
+		"oraclelinux",
+		"os2",
+		"other24xlinux",
+		"other26xlinux",
+		"other3xlinux",
+		"other",
+		"otherguest",
+		"otherlinux",
+		"redhat",
+		"rhel",
+		"sjds",
+		"sles",
+		"solaris",
+		"suse",
+		"turbolinux",
+		"ubuntu",
+		"unixware",
+		"vmkernel",
+		"vmwarephoton",
+		"win31",
+		"win95",
+		"win98",
+		"windows",
+		"windowshyperv",
+		"winlonghorn",
+		"winme",
+		"winnetbusiness",
+		"winnetdatacenter",
+		"winnetenterprise",
+		"winnetstandard",
+		"winnetweb",
+		"winnt",
+		"winvista",
+		"winxphome",
+		"winxppro",
+	}
+
+	guestos = fmt.Sprintf("%s\n", strings.ToLower(guestos))
+	for i := 0; i < len(allGuestOSs); i++ {
+		if strings.Contains(guestos, allGuestOSs[i]) {
+			return true
+		}
+	}
+	return false
+>>>>>>> b4c5ff5490318e1efa277b1a2fd1b7e4213cb655
 }
 <<<<<<< HEAD
 =======
